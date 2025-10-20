@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SearchView: View {
+struct SearchTipsView: View {
     @State private var searchText = ""
 
     
@@ -104,5 +104,5 @@ struct CategoryTile: View {
 }
 
 #Preview {
-    SearchView()
+    SearchTipsView()
 }

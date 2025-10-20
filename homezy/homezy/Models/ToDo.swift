@@ -13,5 +13,6 @@ struct ToDo: Identifiable, Hashable {
     let title: String
     let icon: String
     let detail: String
+    let date: Date
 }
 

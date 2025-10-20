@@ -50,7 +50,8 @@ struct ChallengeView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
-
+/*
 #Preview {
-    ChallengeView(todoItem: ToDo(title: "Fold clothes", icon: "tshirt.fill", detail: "ldofkvnosveovoVAVOIAN"))
+    ChallengeView(todoItem: ToDo(title: "Fold clothes", icon: "tshirt.fill", detail: "ldofkvnosveovoVAVOIAN", date: 2))
 }
+*/

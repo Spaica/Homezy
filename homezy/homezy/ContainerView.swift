@@ -20,8 +20,8 @@ struct ContainerView: View {
                 /*Tab("Calendar", systemImage: "calendar"){
                     CalendarView()
                 }*/
-                Tab("Search", systemImage: "magnifyingglass"){
-                    SearchView()
+                Tab("Tips", systemImage: "magnifyingglass"){
+                    SearchTipsView()
                 }
         }
     }
