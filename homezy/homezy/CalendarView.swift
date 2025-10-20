@@ -136,7 +136,7 @@ struct CalendarView: View {
                                     .bold()
                             }//END HEADER
                         }//END LIST
-                        Button("Chiudi") {
+                        Button("Close") {
                             showOverlay = false
                         }
                         .padding()

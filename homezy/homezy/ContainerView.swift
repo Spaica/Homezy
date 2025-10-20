@@ -17,12 +17,9 @@ struct ContainerView: View {
                 Tab("Game", systemImage: "gamecontroller.fill"){
                     GameView()
                 }
-                Tab("Achivements", systemImage: "flag.pattern.checkered"){
-                    AchivementsView()
-                }
-                Tab("Calendar", systemImage: "calendar"){
+                /*Tab("Calendar", systemImage: "calendar"){
                     CalendarView()
-                }
+                }*/
                 Tab("Search", systemImage: "magnifyingglass"){
                     SearchView()
                 }
