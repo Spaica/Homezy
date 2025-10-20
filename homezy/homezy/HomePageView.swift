@@ -18,12 +18,10 @@ struct HomePageView: View {
         return (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: startOfWeek) }
     }
     
-    // To-do di oggi
     private var todayToDo: [ToDo] {
         todo.filter { Calendar.current.isDate($0.date, inSameDayAs: Date()) }
     }
     
-    // To-do del giorno selezionato nel calendario
     private var selectedDayToDo: [ToDo] {
         guard let selected = selectedDate else { return [] }
         return todo.filter { Calendar.current.isDate($0.date, inSameDayAs: selected) }
@@ -34,7 +32,7 @@ struct HomePageView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 25) {
                     
-                    // MARK: - TO DO'S SECTION (OGGI)
+                    // MARK: - TO DO'S SECTION
                     Text("To do's")
                         .font(.title2)
                         .bold()
@@ -50,7 +48,7 @@ struct HomePageView: View {
                         .padding(.horizontal)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    // Calendario orizzontale
+                    // Calendar
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 15) {
                             ForEach(weekDays, id: \.self) { date in
@@ -66,7 +64,7 @@ struct HomePageView: View {
                         .padding(.vertical, 5)
                     }
                     
-                    // MARK: - TO DO'S DEL GIORNO SELEZIONATO
+                    // MARK: - TO DO'S OF THE DAY
                     if let selected = selectedDate {
                         VStack(alignment: .leading, spacing: 8) {
                             Text(selected, format: .dateTime.day().month(.wide))
@@ -93,41 +91,45 @@ struct ToDoListView: View {
     
     var body: some View {
         if items.isEmpty {
-            Text("No tasks for this day 🎉")
+            Text("Nothing to do for this day 🎉")
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.vertical, 20)
         } else {
-            List {
-                ForEach(items, id: \.id) { item in
-                    NavigationLink(destination: ChallengeView(todoItem: item)) {
-                        HStack(spacing: 15) {
-                            Image(systemName: item.icon)
-                                .foregroundColor(.blue)
-                                .font(.title2)
-                                .frame(width: 30)
-                            Text(item.title)
-                                .foregroundColor(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.gray)
+            VStack(spacing: 0) {
+                List {
+                    ForEach(items, id: \.id) { item in
+                        NavigationLink(destination: ChallengeView(todoItem: item)) {
+                            HStack(spacing: 15) {
+                                Image(systemName: item.icon)
+                                    .foregroundColor(.blue)
+                                    .font(.title2)
+                                    .frame(width: 30)
+                                
+                                Text(item.title)
+                                    .foregroundColor(.primary)
+                                    .font(.body)
+                            }
+                            .padding(.vertical, 8)
                         }
-                        .padding(.vertical, 8)
+                        .listRowBackground(Color(.systemGray6))
+                        .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                     }
-                    .listRowBackground(Color(.systemGray6))
-                    .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                 }
+                .scrollContentBackground(.hidden)
+                .listStyle(.plain)
+                .frame(height: CGFloat(items.count) * 55)
             }
-            .scrollContentBackground(.hidden)
-            .background(Color.clear)
-            .listStyle(.plain)
-            .frame(height: CGFloat(items.count) * 55)
+            .background(Color(.systemGray5))
+            .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
+            .padding(.horizontal)
+            .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
         }
     }
 }
 
 //
-// MARK: - COMPONENTE GIORNO CALENDARIO
+// MARK: - DAY ON CALENDAR
 //
 struct DayCalendarCell: View {
     let date: Date
