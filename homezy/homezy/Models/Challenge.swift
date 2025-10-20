@@ -4,7 +4,7 @@
 //
 //  Created by Riccardo Puggioni on 18/10/25.
 //
-//sevre veramente bho?
+//sevre veramente bho per ora l'ho fatta?
 import Foundation
 import SwiftUI
 
