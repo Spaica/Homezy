@@ -2,7 +2,7 @@ import SwiftUI
 
 struct AIView: View {
     @State private var inputImage: UIImage?
-    @State private var classificationLabel = "Nessuna immagine selezionata"
+    @State private var classificationLabel = "No image selected"
     @State private var showingImagePicker = false
     @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
     @State private var showingActionSheet = false
@@ -11,7 +11,7 @@ struct AIView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("Hai completato la challenge?")
+            Text("Did you completed the challenge?")
                 .font(.largeTitle)
                 .fontWeight(.bold)
 
@@ -46,7 +46,7 @@ struct AIView: View {
             }) {
                 HStack {
                     Image(systemName: "camera.fill")
-                    Text("Carica Immagine")
+                    Text("Upload image")
                 }
                 .font(.headline)
                 .foregroundColor(.white)
@@ -63,12 +63,12 @@ struct AIView: View {
             ImagePicker(selectedImage: self.$inputImage, sourceType: self.sourceType)
         }
         .actionSheet(isPresented: $showingActionSheet) {
-            ActionSheet(title: Text("Scegli un'opzione"), buttons: [
-                .default(Text("Fotocamera")) {
+            ActionSheet(title: Text("Choose an option"), buttons: [
+                .default(Text("Camera")) {
                     self.sourceType = .camera
                     self.showingImagePicker = true
                 },
-                .default(Text("Libreria Foto")) {
+                .default(Text("Photos library")) {
                     self.sourceType = .photoLibrary
                     self.showingImagePicker = true
                 },
@@ -92,20 +92,19 @@ struct AIView: View {
                         let formattedResult = classification
                             .map { "\($0.key) (\(String(format: "%.2f", $0.value * 100))%)" }
                             .joined(separator: "\n")
-                        self.classificationLabel = "Piatto: \(classification.first?.key ?? "Non riconosciuto")"
-                        print("Classificazione:\n\(formattedResult)")
+                        self.classificationLabel = "Plate: \(classification.first?.key ?? "Not recognized")"
                     }
                 case .failure(let error):
                     DispatchQueue.main.async {
-                        self.classificationLabel = "Errore nella classificazione"
-                        print("Errore: \(error.localizedDescription)")
+                        self.classificationLabel = "Error in the classification"
+                        print("Error: \(error.localizedDescription)")
                     }
                 }
             }
         } catch {
             DispatchQueue.main.async {
-                self.classificationLabel = "Errore nell'elaborazione"
-                print("Errore: \(error.localizedDescription)")
+                self.classificationLabel = "Error in the elaborarion"
+                print("Error: \(error.localizedDescription)")
             }
         }
     }
