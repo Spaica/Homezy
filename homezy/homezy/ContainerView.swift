@@ -17,9 +17,6 @@ struct ContainerView: View {
                 Tab("Game", systemImage: "gamecontroller.fill"){
                     GameView()
                 }
-                /*Tab("Calendar", systemImage: "calendar"){
-                    CalendarView()
-                }*/
                 Tab("Tips", systemImage: "magnifyingglass"){
                     SearchTipsView()
                 }
