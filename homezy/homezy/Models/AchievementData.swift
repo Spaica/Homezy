@@ -7,26 +7,12 @@
 
 import SwiftUI
 
-// MARK: - Core Theme & Data
-extension Color {
-    // Defines a strong blue matching your app's existing theme
-    static let primaryBlue = Color.blue
-    static let progressGreen = Color(red: 46/255, green: 204/255, blue: 113/255) // #2ECC71
-    static let achievementLocked = Color(.systemGray4)
-}
-
 // MARK: - Game Data Structures
 struct UserData {
     var currentPoints: Int
     var level: Int
     var pointsToNextLevel: Int
     var profileImageName: String
-}
-
-struct GameCategory {
-    var name: String
-    var iconName: String
-    var color: Color
 }
 
 struct Achievement: Identifiable {
@@ -45,12 +31,6 @@ let initialUserData = UserData(
     pointsToNextLevel: 250, // User needs 250 points for Level 2
     profileImageName: "person.circle.fill"
 )
-
-let gameCategories: [GameCategory] = [
-    .init(name: "Cleaning", iconName: "shower.fill", color: Color(red: 231/255, green: 76/255, blue: 60/255)), // Reddish-Orange
-    .init(name: "Clothing", iconName: "tshirt.fill", color: Color(red: 155/255, green: 89/255, blue: 182/255)), // Purple
-    .init(name: "Scheduling", iconName: "calendar.badge.clock.fill", color: .primaryBlue), // Blue
-]
 
 let initialAchievements: [Achievement] = [
     // All achievements are LOCKED (isUnlocked: false)

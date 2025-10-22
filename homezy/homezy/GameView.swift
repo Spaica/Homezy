@@ -39,9 +39,14 @@ struct RingView: View {
 struct AchievementRowView: View {
     let achievement: Achievement
     
-    // Helper to find the correct color for the icon based on category
+    // Fallback color since categories are not defined anymore
     private var iconAccentColor: Color {
-        gameCategories.first(where: { $0.name == achievement.categoryName })?.color ?? .gray
+        switch achievement.categoryName {
+        case "Cleaning": return .blue
+        case "Scheduling": return .green
+        case "Clothing": return .orange
+        default: return .gray
+        }
     }
 
     var body: some View {
@@ -69,7 +74,7 @@ struct AchievementRowView: View {
 
             // Status Icon (Checkmark or Lock)
             Image(systemName: achievement.isUnlocked ? "checkmark.circle.fill" : "lock.fill")
-                .foregroundColor(achievement.isUnlocked ? .progressGreen : .achievementLocked)
+                .foregroundColor(achievement.isUnlocked ? .green : .gray)
                 .font(.title2)
         }
         .padding(.vertical, 8)
@@ -104,7 +109,7 @@ struct GameView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
                             Image(systemName: "medal.fill")
-                                .foregroundColor(.primaryBlue)
+                                .foregroundColor(.blue)
                                 .font(.title2)
                             Text("Current Points: \(user.currentPoints) pts")
                                 .font(.title2)
@@ -117,7 +122,7 @@ struct GameView: View {
                             .foregroundColor(.gray)
                         
                         ProgressView(value: currentLevelProgress)
-                            .progressViewStyle(LinearProgressViewStyle(tint: .progressGreen))
+                            .progressViewStyle(LinearProgressViewStyle(tint: .green))
                             .scaleEffect(x: 1, y: 2, anchor: .center)
                             .padding(.vertical, 5)
                     }
@@ -156,16 +161,7 @@ struct GameView: View {
                     }
                     .padding(.horizontal)
                     
-                    // MARK: - MOTIVATION
-                    VStack(alignment: .center, spacing: 10) {
-                        Text("💪 Keep it up!")
-                            .font(.title2.bold())
-                        Text("Every task you complete brings you closer to independence.")
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding(.horizontal)
-                    .padding(.top, 20)
+        
                 }
                 .padding(.bottom, 40)
             }
