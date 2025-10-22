@@ -1,5 +1,5 @@
 //
-//  ChallengeView.swift
+//  GameView.swift
 //  homezy
 //
 //  Created by Riccardo Puggioni on 15/10/25.
@@ -65,10 +65,9 @@ struct AchievementRowView: View {
             VStack(alignment: .leading) {
                 Text(achievement.name)
                     .font(.headline)
-                    .foregroundColor(.black)
                 Text(achievement.description)
                     .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -89,9 +88,14 @@ struct GameView: View {
     
     @State private var user = initialUserData
     @State private var achievements = initialAchievements
-
+    @State private var selectedCategory: ToDoCategory = .cleaning
+    
+    // fiklter toDo by day aand category
     private var todayToDo: [ToDo] {
-        todo.filter { Calendar.current.isDate($0.date, inSameDayAs: Date()) }
+        todo.filter { item in
+            Calendar.current.isDate(item.date, inSameDayAs: Date()) &&
+            item.category == selectedCategory
+        }
     }
     
     private var currentLevelProgress: Double {
@@ -114,12 +118,11 @@ struct GameView: View {
                             Text("Current Points: \(user.currentPoints) pts")
                                 .font(.title2)
                                 .fontWeight(.bold)
-                                .foregroundColor(.black)
                         }
                         
                         Text("Level \(user.level): \(user.currentPoints) / \(user.pointsToNextLevel) pts")
                             .font(.subheadline)
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                         
                         ProgressView(value: currentLevelProgress)
                             .progressViewStyle(LinearProgressViewStyle(tint: .green))
@@ -140,19 +143,27 @@ struct GameView: View {
                     .padding(.horizontal)
                     
                     // MARK: - TODAY'S TASKS
-                    Text("Today's Tasks")
-                        .font(.title2.bold())
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Today's Tasks")
+                            .font(.title2.bold())
+                            .padding(.horizontal)
+                        
+                        Picker("Category", selection: $selectedCategory) {
+                            ForEach(ToDoCategory.allCases) { category in
+                                Text(category.rawValue).tag(category)
+                            }
+                        }
+                        .pickerStyle(.segmented)
                         .padding(.horizontal)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    ToDoListView(items: todayToDo)
+                        
+                        ToDoListView(items: todayToDo)
+                    }
                     
                     // MARK: - ACHIEVEMENTS SECTION
                     VStack(alignment: .leading, spacing: 0) {
                         Text("Achievements")
                             .font(.title2)
                             .fontWeight(.bold)
-                            .foregroundColor(.black)
                             .padding(.bottom, 10)
                         
                         ForEach(achievements) { achievement in
@@ -160,8 +171,6 @@ struct GameView: View {
                         }
                     }
                     .padding(.horizontal)
-                    
-        
                 }
                 .padding(.bottom, 40)
             }
