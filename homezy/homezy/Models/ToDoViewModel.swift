@@ -17,46 +17,35 @@ let todo: [ToDo] = [
         title: "Fold Clothes",
         icon: "tshirt.fill",
         detail: "Time to tidy up! Please fold and put away all the clean clothes in your wardrobe.",
-        date: date(byAddingDays: 0), // Example of a current task
+        date: date(byAddingDays: 0),
         category: .clothing
     ),
     .init(
         title: "Wash dishes",
         icon: "dishwasher.fill",
         detail: "Don't leave them for tomorrow! Wash all the dishes and cookware.",
-        date: date(byAddingDays: 0), // Daily task
+        date: date(byAddingDays: 0),
         category: .cleaning
     ),
     .init(
         title: "Clean bathroom",
         icon: "shower.fill",
         detail: "A clean bathroom is a happy bathroom.",
-        date: date(byAddingDays: 1), // First bi-weekly clean
+        date: date(byAddingDays: 1),
         category: .cleaning
     ),
     .init(
         title: "Clean the office",
         icon: "lamp.desk.fill",
         detail: "Organize your documents, wipe your desk, and clear out clutter.",
-        date: date(byAddingDays: 2), // Weekly task
+        date: date(byAddingDays: 2),
         category: .cleaning
     ),
     .init(
         title: "Change the blankets",
         icon: "bed.double.fill",
         detail: "Fresh sheets feel amazing! Remove the old blankets and put on a fresh set.",
-        date: date(byAddingDays: 3), // Weekly task
-        category: .cleaning
-    ),
-    
-    // --- New CHALLENGES Added ---
-    
-    // Day 0 (Wednesday) Tasks
-    .init(
-        title: "Clean Microwave & Toaster",
-        icon: "microwave.fill",
-        detail: "Eliminate splatters and crumbs from your heating appliances for a cleaner kitchen.",
-        date: date(byAddingDays: 0),
+        date: date(byAddingDays: 3),
         category: .cleaning
     ),
     .init(
@@ -70,11 +59,9 @@ let todo: [ToDo] = [
         title: "Skill Practice (30 Min)",
         icon: "brain.head.profile",
         detail: "Dedicate 30 minutes to practicing a new language, instrument, or professional skill.",
-        date: date(byAddingDays: 0), // Daily task
+        date: date(byAddingDays: 0),
         category: .scheduling
     ),
-
-    // Day 1 (Thursday) Tasks
     .init(
         title: "Sanitize Surfaces",
         icon: "hand.tap",
@@ -82,22 +69,11 @@ let todo: [ToDo] = [
         date: date(byAddingDays: 1),
         category: .cleaning
     ),
-
-    // Day 2 (Friday) Tasks
-    .init(
-        title: "Personal Time Out (1 Hour)",
-        icon: "leaf.fill",
-        detail: "Schedule 60 minutes with zero screens, zero tasks, just for relaxation or reflection.",
-        date: date(byAddingDays: 2),
-        category: .scheduling
-    ),
-    
-    // Day 3 (Saturday) Tasks
     .init(
         title: "Wipe Kitchen Cabinets",
         icon: "kitchen.fill",
         detail: "Wipe down cabinet doors, especially near the stove and handles.",
-        date: date(byAddingDays: 3), // Bi-weekly task
+        date: date(byAddingDays: 3),
         category: .cleaning
     ),
     .init(
@@ -114,17 +90,6 @@ let todo: [ToDo] = [
         date: date(byAddingDays: 3),
         category: .scheduling
     ),
-
-    // Day 4 (Sunday) Tasks
-    .init(
-        title: "Mend One Item",
-        icon: "scissors",
-        detail: "Sew a button, fix a small tear, or remove a stain from one clothing item.",
-        date: date(byAddingDays: 4), // Bi-weekly task
-        category: .clothing
-    ),
-
-    // Day 5 (Monday) Tasks
     .init(
         title: "Tidy Entryway",
         icon: "lock.fill",
@@ -133,7 +98,6 @@ let todo: [ToDo] = [
         category: .cleaning
     ),
 
-    // Day 6 (Tuesday) Tasks
     .init(
         title: "Deep Fold Drawers (KonMari)",
         icon: "square.grid.2x2.fill",
