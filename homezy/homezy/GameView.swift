@@ -137,8 +137,8 @@ struct GameView: View {
                     // MARK: - RING SECTION
                     HStack(spacing: 30) {
                         RingView(color: .blue, progress: cleaningProgress, label: "Cleaning")
-                        RingView(color: .green, progress: tidinessProgress, label: "Tidiness")
-                        RingView(color: .orange, progress: independenceProgress, label: "Independence")
+                        RingView(color: .orange, progress: tidinessProgress, label: "Clothes")
+                        RingView(color: .green, progress: independenceProgress, label: "Schedule")
                     }
                     .padding(.horizontal)
                     
