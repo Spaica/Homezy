@@ -1,20 +1,21 @@
 import SwiftUI
 
 struct AIView: View {
-    @State private var inputImage: UIImage?
+    @State private var inputImage: UIImage? //? is because its optional, so it can be either UIImanhe or nil
     @State private var classificationLabel = "No image selected"
     @State private var showingImagePicker = false
     @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
     @State private var showingActionSheet = false
-
-    private let imageClassifier = ImageClassifier()
-
+    
+    private let imageClassifier = ImageClassifier() //create the object
+    
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Did you completed the challenge?")
+        VStack{
+            Text("Show your results!")
                 .font(.largeTitle)
                 .fontWeight(.bold)
-
+            
+            //if inputimage is actually an image and is not nil
             if let inputImage = inputImage {
                 Image(uiImage: inputImage)
                     .resizable()
@@ -34,16 +35,17 @@ struct AIView: View {
                         .foregroundColor(.gray)
                 }
             }
-
+            
             Text(classificationLabel)
                 .font(.title2)
                 .fontWeight(.medium)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
-
+            
             Button(action: {
                 self.showingActionSheet = true
-            }) {
+            })
+            {
                 HStack {
                     Image(systemName: "camera.fill")
                     Text("Upload image")
@@ -59,9 +61,11 @@ struct AIView: View {
             .padding(.horizontal)
         }
         .padding()
+        
         .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
             ImagePicker(selectedImage: self.$inputImage, sourceType: self.sourceType)
         }
+        
         .actionSheet(isPresented: $showingActionSheet) {
             ActionSheet(title: Text("Choose an option"), buttons: [
                 .default(Text("Camera")) {
@@ -73,38 +77,39 @@ struct AIView: View {
                     self.showingImagePicker = true
                 },
                 .cancel()
-            ])
+            ]
+            )
         }
     }
-
+    
     func loadImage() {
-        guard let inputImage = inputImage else { return }
+        guard let inputImage = inputImage else {
+            return
+        }
+        
         classifyImage(image: inputImage)
     }
-
+    
     private func classifyImage(image: UIImage) {
-        do {
-            try self.imageClassifier.classifyImage(image) { result in
-                switch result {
-                case .success(let classification):
-                    DispatchQueue.main.async {
-                        // Formatta il risultato per visualizzarlo
-                        let formattedResult = classification
-                            .map { "\($0.key) (\(String(format: "%.2f", $0.value * 100))%)" }
-                            .joined(separator: "\n")
-                        self.classificationLabel = "Plate: \(classification.first?.key ?? "Not recognized")"
-                    }
-                case .failure(let error):
-                    DispatchQueue.main.async {
-                        self.classificationLabel = "Error in the classification"
-                        print("Error: \(error.localizedDescription)")
-                    }
+        self.imageClassifier.classifyImage(image) {
+            //completion handler
+            result in
+            switch result {
+            case .success(let classification):
+                DispatchQueue.main.async {
+                    _ = classification //dictionary
+                    //map acts on all items in the dict
+                    //formatted strings
+                        .map { "\($0.key) (\(String(format: "%.2f", $0.value * 100))%)" }
+                        .joined(separator: "\n")
+                    self.classificationLabel = "Plate: \(classification.first?.key ?? "Not recognized")"
+                    //? is because the dict could be empty, in that case its not recognised. The acces is made to the first element of the dict
                 }
-            }
-        } catch {
-            DispatchQueue.main.async {
-                self.classificationLabel = "Error in the elaborarion"
-                print("Error: \(error.localizedDescription)")
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.classificationLabel = "Error in the classification"
+                    print("Error: \(error.localizedDescription)")
+                }
             }
         }
     }
