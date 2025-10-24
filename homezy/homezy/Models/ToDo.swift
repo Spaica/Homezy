@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum ToDoCategory: String, CaseIterable, Identifiable {
+enum ToDoCategory: String, CaseIterable, Identifiable, Codable {
     case cleaning = "Cleaning"
     case clothing = "Clothing"
     case scheduling = "Scheduling"
@@ -16,8 +16,8 @@ enum ToDoCategory: String, CaseIterable, Identifiable {
     var id: String { self.rawValue }
 }
 
-struct ToDo: Identifiable, Hashable {
-    let id = UUID()
+struct ToDo: Identifiable, Hashable, Codable {
+    var id: UUID = UUID()
     let title: String
     let icon: String
     let detail: String

@@ -9,11 +9,16 @@ import SwiftUI
 
 struct ChallengeView: View {
     let todoItem: ToDo
+    
+    // MARK: - ADDED LOGIC
+    @Environment(\.dismiss) private var dismiss
+    @State private var popToHome: Bool = false
 
     var body: some View {
-        NavigationStack{
+        NavigationStack {
             VStack(alignment: .leading, spacing: 20) {
                 
+                // MARK: - HEADER
                 HStack {
                     Image(systemName: todoItem.icon)
                         .resizable()
@@ -27,6 +32,7 @@ struct ChallengeView: View {
                 
                 Divider()
                 
+                // MARK: - DETAILS
                 Text("Detail: \(todoItem.title)")
                     .font(.title2)
                     .bold()
@@ -37,24 +43,39 @@ struct ChallengeView: View {
                 
                 Spacer()
                 
-                NavigationLink("Completa challenge"){
-                    AIView()
+                // MARK: - NAVIGATION TO AI VIEW
+                NavigationLink("Start challenge") {
+                    AIView(todoItem: todoItem, popToHome: $popToHome)
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
                 .background(Color.green)
                 .foregroundColor(.white)
                 .clipShape(Capsule())
-                
             }
             .padding()
             .navigationTitle(todoItem.title)
             .navigationBarTitleDisplayMode(.inline)
+            // MARK: - ADDED LOGIC
+            // When AIView sets popToHome = true, dismiss this screen to return to HomePage
+            .onChange(of: popToHome) { newValue in
+                if newValue {
+                    dismiss()
+                }
+            }
         }
     }
 }
 
-/*#Preview {
-    ChallengeView(todoItem: ToDo(title: "Fold clothes", icon: "tshirt.fill", detail: "ldofkvnosveovoVAVOIAN", date: date(byAddingDays: 0)))
+// MARK: - PREVIEW
+#Preview {
+    ChallengeView(
+        todoItem: ToDo(
+            title: "Wash the dishes",
+            icon: "fork.knife.circle.fill",
+            detail: "Use the AI camera to verify the clean plates.",
+            date: Date(),
+            category: .cleaning
+        )
+    )
 }
-*/

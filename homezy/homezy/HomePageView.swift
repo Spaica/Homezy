@@ -8,23 +8,26 @@
 import SwiftUI
 
 struct HomePageView: View {
+    // MARK: - ADDED LOGIC
+    // Ora osserva il ViewModel per aggiornare automaticamente la lista dei ToDo
+    @ObservedObject var todoVM = ToDoViewModel.shared
+    
     @State private var currentDate = Date()
     @State private var selectedDate: Date? = Date()
     
-    private var weekDays: [Date] {
-        var calendar = Calendar.current
-        calendar.firstWeekday = 2
-        let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: currentDate))!
-        return (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: startOfWeek) }
+    // MARK: - ADDED LOGIC
+    private var nextDays: [Date] {
+        (1...7).compactMap { Calendar.current.date(byAdding: .day, value: $0, to: Date()) }
     }
     
+    // MARK: - Filtraggio ToDo
     private var todayToDo: [ToDo] {
-        todo.filter { Calendar.current.isDate($0.date, inSameDayAs: Date()) }
+        todoVM.todos.filter { Calendar.current.isDate($0.date, inSameDayAs: Date()) }
     }
     
     private var selectedDayToDo: [ToDo] {
         guard let selected = selectedDate else { return [] }
-        return todo.filter { Calendar.current.isDate($0.date, inSameDayAs: selected) }
+        return todoVM.todos.filter { Calendar.current.isDate($0.date, inSameDayAs: selected) }
     }
     
     var body: some View {
@@ -39,6 +42,7 @@ struct HomePageView: View {
                         .padding(.horizontal)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
+                    // Lista dinamica che si aggiorna al completamento dei ToDo
                     ToDoListView(items: todayToDo)
                     
                     // MARK: - WHAT'S NEXT
@@ -48,10 +52,10 @@ struct HomePageView: View {
                         .padding(.horizontal)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    // Calendar
+                    // Calendario con i prossimi 5 giorni
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 15) {
-                            ForEach(weekDays, id: \.self) { date in
+                            ForEach(nextDays, id: \.self) { date in
                                 DayCalendarCell(date: date, selectedDate: $selectedDate)
                                     .onTapGesture {
                                         withAnimation {
@@ -157,6 +161,7 @@ struct DayCalendarCell: View {
     }
 }
 
+// MARK: - PREVIEW
 #Preview {
     HomePageView()
 }

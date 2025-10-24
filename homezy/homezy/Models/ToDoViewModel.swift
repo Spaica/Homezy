@@ -7,9 +7,52 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 private func date(byAddingDays days: Int) -> Date {
     Calendar.current.date(byAdding: .day, value: days, to: Date())!
+}
+
+// MARK: - ADDED LOGIC
+// ViewModel centralizzato per gestire ToDo dinamici con salvataggio e completamento
+class ToDoViewModel: ObservableObject {
+    static let shared = ToDoViewModel()
+    
+    @Published var todos: [ToDo] = []
+    
+    private let saveKey = "savedTodos"
+    
+    init() {
+        loadTodos()
+    }
+    
+    private func loadTodos() {
+        if let data = UserDefaults.standard.data(forKey: saveKey),
+           let decoded = try? JSONDecoder().decode([ToDo].self, from: data) {
+            self.todos = decoded
+        } else {
+            self.todos = todo // fallback iniziale statico
+        }
+    }
+    
+    private func saveTodos() {
+        if let encoded = try? JSONEncoder().encode(todos) {
+            UserDefaults.standard.set(encoded, forKey: saveKey)
+        }
+    }
+    
+    func complete(_ item: ToDo) {
+        guard let index = todos.firstIndex(where: { $0.id == item.id }) else { return }
+        todos.remove(at: index)
+        saveTodos()
+        
+        UserViewModel.shared.addPoints(50)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 60) {
+            self.todos.append(item)
+            self.saveTodos()
+        }
+    }
 }
 
 let todo: [ToDo] = [
@@ -97,7 +140,6 @@ let todo: [ToDo] = [
         date: date(byAddingDays: 5),
         category: .cleaning
     ),
-
     .init(
         title: "Deep Fold Drawers (KonMari)",
         icon: "square.grid.2x2.fill",

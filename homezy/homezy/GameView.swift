@@ -22,7 +22,7 @@ struct RingView: View {
                     .trim(from: 0, to: progress)
                     .stroke(color, style: StrokeStyle(lineWidth: 15, lineCap: .round))
                     .rotationEffect(.degrees(-90))
-                    .animation(.easeOut(duration: 1.0), value: progress)
+                    .animation(.easeOut(duration: 0.8), value: progress)
                 
                 Text("\(Int(progress * 100))%")
                     .font(.headline)
@@ -39,7 +39,6 @@ struct RingView: View {
 struct AchievementRowView: View {
     let achievement: Achievement
     
-    // Fallback color since categories are not defined anymore
     private var iconAccentColor: Color {
         switch achievement.categoryName {
         case "Cleaning": return .blue
@@ -51,7 +50,6 @@ struct AchievementRowView: View {
 
     var body: some View {
         HStack {
-            // Icon Container
             ZStack {
                 Circle()
                     .fill(iconAccentColor.opacity(0.15))
@@ -61,7 +59,6 @@ struct AchievementRowView: View {
             }
             .padding(.trailing, 10)
 
-            // Details
             VStack(alignment: .leading) {
                 Text(achievement.name)
                     .font(.headline)
@@ -71,7 +68,6 @@ struct AchievementRowView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            // Status Icon (Checkmark or Lock)
             Image(systemName: achievement.isUnlocked ? "checkmark.circle.fill" : "lock.fill")
                 .foregroundColor(achievement.isUnlocked ? .green : .gray)
                 .font(.title2)
@@ -82,25 +78,37 @@ struct AchievementRowView: View {
 
 // MARK: - MAIN CHALLENGE VIEW
 struct GameView: View {
-    @State private var cleaningProgress: Double = 0.7
-    @State private var tidinessProgress: Double = 0.5
-    @State private var independenceProgress: Double = 0.3
+    @ObservedObject var userVM = UserViewModel.shared
+    @ObservedObject var todoVM = ToDoViewModel.shared
     
-    @State private var user = initialUserData
-    @State private var achievements = initialAchievements
     @State private var selectedCategory: ToDoCategory = .cleaning
     
-    // fiklter toDo by day aand category
-    private var todayToDo: [ToDo] {
-        todo.filter { item in
-            Calendar.current.isDate(item.date, inSameDayAs: Date()) &&
-            item.category == selectedCategory
+    // MARK: - ADDED LOGIC
+    @State private var showLevelGlow = false
+    @State private var animatedPoints: Int = 0
+    
+    // Calcolo dinamico del progresso giornaliero per ogni categoria
+    private func progress(for category: ToDoCategory) -> Double {
+        let allToday = todoVM.todos.filter {
+            Calendar.current.isDate($0.date, inSameDayAs: Date()) &&
+            $0.category == category
         }
+        
+        let totalInitial = todo.filter {
+            $0.category == category &&
+            Calendar.current.isDate($0.date, inSameDayAs: Date())
+        }.count
+        
+        guard totalInitial > 0 else { return 0 }
+        let remaining = allToday.count
+        let completed = totalInitial - remaining
+        
+        return max(0, min(Double(completed) / Double(totalInitial), 1))
     }
     
     private var currentLevelProgress: Double {
-        let current = Double(user.currentPoints)
-        let next = Double(user.pointsToNextLevel)
+        let current = Double(userVM.user.currentPoints)
+        let next = Double(userVM.user.pointsToNextLevel)
         return next > 0 ? current / next : 0
     }
     
@@ -109,20 +117,27 @@ struct GameView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 30) {
                     
-                    // MARK: - POINTS SECTION
+                    // MARK: - POINTS SECTION (Ora dinamica e animata)
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
                             Image(systemName: "medal.fill")
                                 .foregroundColor(.blue)
                                 .font(.title2)
-                            Text("Current Points: \(user.currentPoints) pts")
+                            
+                            // Animazione morbida dei punti
+                            Text("Current Points: \(animatedPoints) pts")
                                 .font(.title2)
                                 .fontWeight(.bold)
+                                .transition(.opacity.combined(with: .scale))
+                                .animation(.spring(), value: animatedPoints)
                         }
                         
-                        Text("Level \(user.level): \(user.currentPoints) / \(user.pointsToNextLevel) pts")
+                        // Glow al cambio livello
+                        Text("Level \(userVM.user.level): \(userVM.user.currentPoints) / \(userVM.user.pointsToNextLevel) pts")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
+                            .shadow(color: showLevelGlow ? .green.opacity(0.6) : .clear, radius: 8, x: 0, y: 0)
+                            .animation(.easeInOut(duration: 1.0), value: showLevelGlow)
                         
                         ProgressView(value: currentLevelProgress)
                             .progressViewStyle(LinearProgressViewStyle(tint: .green))
@@ -133,12 +148,30 @@ struct GameView: View {
                     .background(Color(.systemGray6))
                     .cornerRadius(10)
                     .padding(.horizontal)
+                    .onChange(of: userVM.user.currentPoints) { newValue in
+                        withAnimation(.spring()) {
+                            animatedPoints = newValue
+                        }
+                    }
+                    .onChange(of: userVM.user.level) { _ in
+                        withAnimation(.easeInOut(duration: 0.8)) {
+                            showLevelGlow = true
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            withAnimation(.easeOut(duration: 1.0)) {
+                                showLevelGlow = false
+                            }
+                        }
+                    }
+                    .onAppear {
+                        animatedPoints = userVM.user.currentPoints
+                    }
                     
-                    // MARK: - RING SECTION
+                    // MARK: - RING SECTION (Ora dinamici)
                     HStack(spacing: 30) {
-                        RingView(color: .blue, progress: cleaningProgress, label: "Cleaning")
-                        RingView(color: .orange, progress: tidinessProgress, label: "Clothes")
-                        RingView(color: .green, progress: independenceProgress, label: "Schedule")
+                        RingView(color: .blue, progress: progress(for: .cleaning), label: "Cleaning")
+                        RingView(color: .orange, progress: progress(for: .clothing), label: "Clothing")
+                        RingView(color: .green, progress: progress(for: .scheduling), label: "Schedule")
                     }
                     .padding(.horizontal)
                     
@@ -156,6 +189,11 @@ struct GameView: View {
                         .pickerStyle(.segmented)
                         .padding(.horizontal)
                         
+                        let todayToDo = todoVM.todos.filter {
+                            Calendar.current.isDate($0.date, inSameDayAs: Date()) &&
+                            $0.category == selectedCategory
+                        }
+                        
                         ToDoListView(items: todayToDo)
                     }
                     
@@ -166,7 +204,7 @@ struct GameView: View {
                             .fontWeight(.bold)
                             .padding(.bottom, 10)
                         
-                        ForEach(achievements) { achievement in
+                        ForEach(userVM.achievements) { achievement in
                             AchievementRowView(achievement: achievement)
                         }
                     }
@@ -179,6 +217,7 @@ struct GameView: View {
     }
 }
 
+// MARK: - PREVIEW
 #Preview {
     GameView()
 }
