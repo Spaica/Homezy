@@ -1,3 +1,10 @@
+//
+//  AI.swift
+//  homezy
+//
+//  Created by Andreina Costagliola on 20/10/25.
+//
+
 import SwiftUI
 import CoreML
 import Vision

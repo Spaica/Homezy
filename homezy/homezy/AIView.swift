@@ -2,7 +2,7 @@
 //  AIView.swift
 //  homezy
 //
-//  Created by Riccardo Puggioni on 15/10/25.
+//  Created by Andreina Costagliola on 20/10/25.
 //
 
 import SwiftUI
