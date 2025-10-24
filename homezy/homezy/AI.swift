@@ -12,7 +12,7 @@ class ImageClassifier {
         case classificationFailed(String)
     }
     
-    // MARK: - Modello VNCoreMLModel
+    // MARK: - Model VNCoreMLModel
     
     //lazy means that the variable will not be initialized until it's accessed, so it's better for the performances
     //also this var is for creating a request to the AI model
@@ -27,7 +27,7 @@ class ImageClassifier {
             //try is there because we know that all the excpetions raised will be handled in the catch, try is used with the do-catch construct
             
             //create the vision model from the coremlmodel, where coreml is for all the ai usage, and vision is the specific use of this framework for dealing with images
-            let model = try VNCoreMLModel(for: coreMLModel) //constructor for VNCoreMLMOdel (vision), il for ci dice quale sarà il tipo atteso da model
+            let model = try VNCoreMLModel(for: coreMLModel) //constructor for VNCoreMLMOdel (vision), the for represents the model's expected type
             
             //creates the object request using the vision model as a parameter of the constructor
             let request = VNCoreMLRequest(model: model) {
@@ -48,7 +48,7 @@ class ImageClassifier {
         }
     }()
     
-    // MARK: - Funzione di Classificazione
+    // MARK: - Classification function
     
     //Creates the actual request
     //UUImage is the object that containes the image data
