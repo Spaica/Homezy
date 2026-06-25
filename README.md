@@ -8,3 +8,8 @@ Homezy è un'applicazione nativa per l'ecosistema Apple sviluppata in **Swift** 
 * **Framework UI:** SwiftUI
 * **Strumenti:** Xcode
 * **Architettura:** MVVM (Model-View-ViewModel)
+
+## Team di sviluppo
+
+* **Andreina Costagliola**
+* **Riccardo Puggioni**
